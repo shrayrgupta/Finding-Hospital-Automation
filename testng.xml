@@ -1,0 +1,10 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<suite name="Finding Hospitals Suite" verbose="1" parallel="false">
+  <parameter name="city" value="Bangalore"/>
+  <test name="Practo Test">
+      <parameter name="Banglore" value="Banglore"></parameter>
+    <classes>
+      <class name="com.practo.tests.PractoTest"/>
+    </classes>
+  </test>
+</suite>
