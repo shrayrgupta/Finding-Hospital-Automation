@@ -13,8 +13,11 @@ import java.util.List;
 
 public class PractoTest extends BaseTest {
 
+
+
     @Parameters({"city"})
     @Test
+
     public void runFlow(@Optional("Bangalore") String city) throws Exception {
         ReportManager.getTest().info("Open home");
         new HomePage(driver).open();

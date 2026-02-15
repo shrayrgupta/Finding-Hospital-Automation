@@ -1,11 +1,10 @@
 package com.practo.pages;
-
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.*;
 import java.time.Duration;
 import java.util.*;
 
-public class LabsPage {
+public class Test {
     private final WebDriver driver;
     private final WebDriverWait wait;
 
@@ -14,7 +13,7 @@ public class LabsPage {
             "//ul[@class='u-br-rule u-marginb--std-half u-pointer u-padb--dbl o-flex o-flex__justify--between']/li/div[2]"
     );
 
-    public LabsPage(WebDriver driver){
+    public Test(WebDriver driver){
         this.driver = driver;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(15));
     }
@@ -24,16 +23,9 @@ public class LabsPage {
         try {
             WebElement hdr = wait.until(ExpectedConditions.visibilityOfElementLocated(topCitiesHeader));
             ((JavascriptExecutor)driver).executeScript("arguments[0].scrollIntoView({block:'center'});", hdr);
-            /*for (WebElement a : driver.findElements(topCitiesLinks)) {
+            for (WebElement a : driver.findElements(topCitiesLinks)) {
                 String t = a.getText().trim();
                 if (!t.isEmpty()) res.add(t);
-            }
-            */int i=1;
-            while (i<9){
-                WebElement addresses = driver.findElement(By.xpath("//ul[@class='u-br-rule u-marginb--std-half u-pointer u-padb--dbl o-flex o-flex__justify--between']/li["+i+"]/div[2]"));
-                String t= addresses.getText().trim();
-                if (!t.isEmpty()) res.add(t);
-                i++;
             }
         } catch (Exception ignored) {}
         return res;

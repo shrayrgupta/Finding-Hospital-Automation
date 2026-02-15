@@ -3,6 +3,7 @@
   <parameter name="city" value="Bangalore"/>
   <test name="Practo Test">
       <parameter name="Banglore" value="Banglore"></parameter>
+
     <classes>
       <class name="com.practo.tests.PractoTest"/>
     </classes>
