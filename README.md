@@ -1,5 +1,5 @@
 Finding Hospitals - Labs and Corporate (Patched)
-
+Teja
 Overview
 
 This repository contains an automated test suite (Selenium + TestNG) for Practo search flows: labs, hospitals, and corporate wellness pages. It is a Maven-based Java project targeting Java 17.
