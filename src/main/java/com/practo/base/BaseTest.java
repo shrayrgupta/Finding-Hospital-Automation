@@ -1,5 +1,6 @@
 package com.practo.base;
 
+import com.practo.utils.DriverContext;
 import com.practo.utils.ReportManager;
 import com.practo.utils.ScreenshotUtil;
 import org.openqa.selenium.WebDriver;
@@ -19,6 +20,8 @@ public class BaseTest {
     @BeforeClass(alwaysRun = true)
     public void setUp() {
         driver = DriverFactory.create();
+        // Make driver available to the WebDriverListener via ThreadLocal
+        DriverContext.set(driver);
     }
 
     @BeforeMethod(alwaysRun = true)
@@ -29,19 +32,30 @@ public class BaseTest {
 
     @AfterMethod(alwaysRun = true)
     public void afterEach(ITestResult r) {
+        // Final snapshot per test (summary shot)
+        String finalShot = ScreenshotUtil.take(driver, "output/screenshots/" + r.getName() + "_final.png");
+
         switch (r.getStatus()) {
-            case ITestResult.SUCCESS -> ReportManager.getTest().pass("Passed");
-            case ITestResult.SKIP -> ReportManager.getTest().skip("Skipped");
+            case ITestResult.SUCCESS -> {
+                if (finalShot != null) try { ReportManager.getTest().addScreenCaptureFromPath(finalShot); } catch (Exception ignored) {}
+                ReportManager.getTest().pass("Passed");
+            }
+            case ITestResult.SKIP -> {
+                if (finalShot != null) try { ReportManager.getTest().addScreenCaptureFromPath(finalShot); } catch (Exception ignored) {}
+                ReportManager.getTest().skip("Skipped");
+            }
             case ITestResult.FAILURE -> {
-                String p = ScreenshotUtil.take(driver, "output/screenshots/" + r.getName() + ".png");
                 ReportManager.getTest().fail(r.getThrowable());
-                if (p != null) try { ReportManager.getTest().addScreenCaptureFromPath(p); } catch (Exception ignored) {}
+                if (finalShot != null) try { ReportManager.getTest().addScreenCaptureFromPath(finalShot); } catch (Exception ignored) {}
             }
         }
     }
 
     @AfterClass(alwaysRun = true)
-    public void tearDown() { if (driver != null) driver.quit(); }
+    public void tearDown() {
+        try { if (driver != null) driver.quit(); }
+        finally { DriverContext.remove(); }
+    }
 
     @AfterSuite(alwaysRun = true)
     public void afterSuite() { ReportManager.flush(); }

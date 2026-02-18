@@ -1,9 +1,11 @@
 package com.practo.base;
 
+import com.practo.listeners.ReportingWebDriverListener;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.events.EventFiringDecorator;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -13,11 +15,9 @@ public class DriverFactory {
     public static WebDriver create() {
         WebDriverManager.chromedriver().setup();
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("--start-maximized");
-        options.addArguments("--disable-notifications");
+        options.addArguments("--start-maximized", "--disable-notifications");
 
         Map<String, Object> prefs = new HashMap<>();
-        // Block geolocation & notifications popups
         prefs.put("profile.default_content_setting_values.geolocation", 2);
         prefs.put("profile.default_content_setting_values.notifications", 2);
         options.setExperimentalOption("prefs", prefs);
@@ -26,10 +26,14 @@ public class DriverFactory {
             options.addArguments("--headless=new");
         }
 
-        WebDriver driver = new ChromeDriver(options);
+        WebDriver raw = new ChromeDriver(options);
+
+        // Attach Selenium 4 listener for auto screenshots
+        WebDriver driver = new EventFiringDecorator(new ReportingWebDriverListener()).decorate(raw);
+
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(0));
         driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
-        driver.manage().timeouts().scriptTimeout(Duration.ofSeconds(30));
+        driver.manage().timeouts().scriptTimeout(Duration.ofSeconds(20));
         return driver;
     }
 }
