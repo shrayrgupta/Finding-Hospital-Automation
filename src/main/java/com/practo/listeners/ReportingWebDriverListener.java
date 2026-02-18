@@ -67,7 +67,8 @@ public class ReportingWebDriverListener implements WebDriverListener {
             } else {
                 ReportManager.getTest().info(message + " (screenshot failed)");
             }
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
     }
 
     private String labelOf(WebElement e) {

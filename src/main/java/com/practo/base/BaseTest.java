@@ -7,6 +7,7 @@ import org.openqa.selenium.WebDriver;
 import org.testng.ITestResult;
 import org.testng.annotations.*;
 
+import java.io.File;
 import java.lang.reflect.Method;
 
 public class BaseTest {
@@ -14,8 +15,23 @@ public class BaseTest {
 
     @BeforeSuite(alwaysRun = true)
     public void beforeSuite() {
+        // 1. Clean the screenshots directory
+        File screenshotDir = new File("output/screenshots");
+        if (screenshotDir.exists()) {
+            File[] files = screenshotDir.listFiles();
+            if (files != null) {
+                for (File f : files) {
+                    if (f.isFile()) f.delete();
+                }
+            }
+        } else {
+            screenshotDir.mkdirs(); // Create it if it doesn't exist
+        }
+
+        // 2. Initialize the report (this usually overwrites the old HTML file automatically)
         ReportManager.init("output/ExtentReport.html");
     }
+
 
     @BeforeClass(alwaysRun = true)
     public void setUp() {
